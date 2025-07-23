@@ -1,4 +1,4 @@
- 
+--  tạo bảng tính sô ngày từ ngày giao dịch gần nhất đến 2010-11-06 
 WITH recent_trans AS (
     SELECT u.user_id, 
     MAX(t.date) as last_transaction_date, 
@@ -9,6 +9,7 @@ WITH recent_trans AS (
 	ON u.user_id=t.client_id
 	GROUP BY u.user_id
 )
+-- bảng tính sô tiền giao dịch
 , monetary_trans AS (
     SELECT u.user_id, 
     Round(sum(abs(amount)),2) AS total_money
@@ -16,6 +17,7 @@ WITH recent_trans AS (
 	LEFT JOIN transactions t
 	ON u.user_id=t.client_id
 	GROUP BY u.user_id)
+-- bảng số lần thực hiện giao dịch
  , freq_trans as(
 	SELECT u.user_id, count(t.transaction_id) as frequency 
     FROM users u 
@@ -69,17 +71,17 @@ on dt.user_id=m.user_id)
 	SELECT user_id,
         r_score,
         f_score,
-        m_score,  -- Đã có sẵn từ score_rf
+        m_score,  
 		CONCAT(r_score, f_score, m_score) AS rfm_score
-	FROM score_rf  -- Bỏ JOIN thêm
+	FROM score_rf  
 
 )
 SELECT  * , CASE 
-    WHEN rfm_score IN ('444','443','434','344','433','424') THEN 'VIP'
-    WHEN rfm_score LIKE '4%' THEN 'Active Recent'  
-    WHEN rfm_score LIKE '%4' THEN 'High Spender'
-     WHEN rfm_score LIKE '2%' THEN 'At Risk'
-    WHEN rfm_score LIKE '1%' OR rfm_score is null  THEN 'Inactive' 
-    ELSE 'Regular'
+    WHEN rfm_score IN ('444','443','434','344','433','424') THEN 'VIP' 
+    WHEN rfm_score IN ('432', '423', '442', '441') THEN 'Loyal Customers'  
+    WHEN rfm_score IN('414', '324', '334', '234', '414', '244') THEN 'High Spender'
+     WHEN rfm_score IN ('212', '213','221', '211', '231') THEN 'At Risk'
+    WHEN rfm_score LIKE '1%' OR rfm_score is null  THEN 'Lost Customers' 
+    ELSE 'Regular Customers'
 END AS segment
 FROM score;
