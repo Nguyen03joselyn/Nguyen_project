@@ -2,7 +2,6 @@
  **📋 Giới thiệu Project:  Phân tích khách hàng ngân hàng sử dụng mô hình RFM (Recency, Frequency, Monetary) bằng SQL**
 ---
 ## Thông tin các bảng
-### Tài liệu này cung cấp cái nhìn tổng quan về cấu trúc các bảng dữ liệu
 ---
 ### 1. Bảng users
 - **Mô tả:** Thông tin cá nhân của khách hàng.
